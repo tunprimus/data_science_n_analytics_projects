@@ -31,12 +31,19 @@ def calculate_demographic_data(print_data=True):
     lower_education_rich = ((lower_education["salary"] == ">50K").value_counts(normalize=True) * 100).round(1)[True]
 
     # What is the minimum number of hours a person works per week (hours-per-week feature)?
-    min_work_hours = None
+    min_work_hours = df["hours-per-week"].min()
 
     # What percentage of the people who work the minimum number of hours per week have a salary of >50K?
-    num_min_workers = None
+    df[df["hours-per-week"] > min_work_hours].count()
+    df[df["hours-per-week"] == min_work_hours]
+    df[df["hours-per-week"] == min_work_hours].count()
+    df[df["hours-per-week"] > min_work_hours, df["salary"] == ">50K"]
+    df[df["hours-per-week"] == min_work_hours, df["salary"] == ">50K"]
+    df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].value_counts()
+    df[(df["hours-per-week"] == min_work_hours) & (df["salary"] != ">50K")]["salary"].value_counts()
+    df[df["hours-per-week"] == min_work_hours].count()["salary"]
 
-    rich_percentage = None
+    rich_percentage = ((df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].value_counts() / df[df["hours-per-week"] == min_work_hours].count()["salary"]) * 100).round(1)
 
     # What country has the highest percentage of people that earn >50K?
     highest_earning_country = None
