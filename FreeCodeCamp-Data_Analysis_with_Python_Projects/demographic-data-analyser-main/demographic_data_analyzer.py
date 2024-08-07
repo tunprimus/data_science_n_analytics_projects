@@ -3,7 +3,7 @@ import pandas as pd
 
 def calculate_demographic_data(print_data=True):
     # Read data from file
-    df = pd.read_csv("./adult.data.csv")
+    df = pd.read_csv("adult.data.csv")
 
     # How many of each race are represented in this dataset? This should be a Pandas series with race names as the index labels.
     df["count"] = 1
@@ -34,23 +34,38 @@ def calculate_demographic_data(print_data=True):
     min_work_hours = df["hours-per-week"].min()
 
     # What percentage of the people who work the minimum number of hours per week have a salary of >50K?
-    df[df["hours-per-week"] > min_work_hours].count()
-    df[df["hours-per-week"] == min_work_hours]
-    df[df["hours-per-week"] == min_work_hours].count()
-    df[df["hours-per-week"] > min_work_hours, df["salary"] == ">50K"]
-    df[df["hours-per-week"] == min_work_hours, df["salary"] == ">50K"]
-    df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].value_counts()
-    df[(df["hours-per-week"] == min_work_hours) & (df["salary"] != ">50K")]["salary"].value_counts()
-    df[df["hours-per-week"] == min_work_hours].count()["salary"]
-
-    rich_percentage = ((df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].value_counts() / df[df["hours-per-week"] == min_work_hours].count()["salary"]) * 100).round(1)
+    # df[df["hours-per-week"] > min_work_hours].count()
+    # df[df["hours-per-week"] == min_work_hours]
+    # df[df["hours-per-week"] == min_work_hours].count()
+    # df[df["hours-per-week"] > min_work_hours, df["salary"] == ">50K"]
+    # df[df["hours-per-week"] == min_work_hours, df["salary"] == ">50K"]
+    # df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].value_counts()
+    # df[(df["hours-per-week"] == min_work_hours) & (df["salary"] != ">50K")]["salary"].value_counts()
+    # df[df["hours-per-week"] == min_work_hours].count()["salary"]
+    # rich_percentage = ((df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].value_counts() / df[df["hours-per-week"] == min_work_hours].count()["salary"]) * 100).round(1)
+    
+    rich_percentage = ((df[(df["hours-per-week"] == min_work_hours) & (df["salary"] == ">50K")]["salary"].count() / df[df["hours-per-week"] == min_work_hours].count()["salary"]) * 100).round(1)
 
     # What country has the highest percentage of people that earn >50K?
-    highest_earning_country = None
-    highest_earning_country_percentage = None
+    # df.head()
+    # df[df["salary"] == ">50K"]
+    # df[df["salary"] == ">50K"].groupby(df["native-country"]).count()
+    # df["salary"].groupby(df["native-country"]).count()
+    # df["salary"].groupby(df["native-country"]).value_counts(normalize=True)
+    # df[df["salary"] == ">50K"]["native-country"].value_counts() / df["native-country"].value_counts()
+    (df[df["salary"] == ">50K"]["native-country"].value_counts() / df["native-country"].value_counts()).idxmax()
+    highest_ipc_country = (df[df["salary"] == ">50K"]["native-country"].value_counts() / df["native-country"].value_counts())
+
+    highest_earning_country = highest_ipc_country.idxmax()
+    highest_earning_country_percentage = (highest_ipc_country[highest_earning_country] * 100).round(1)
 
     # Identify the most popular occupation for those who earn >50K in India.
-    top_IN_occupation = None
+    # df[(df["salary"] == ">50K") & (df["native-country"] == "India")]
+    # df[(df["salary"] == ">50K") & (df["native-country"] == "India")]["occupation"]
+    # df[(df["salary"] == ">50K") & (df["native-country"] == "India")]["occupation"].describe()
+    # df[(df["salary"] == ">50K") & (df["native-country"] == "India")]["occupation"].describe()["top"]
+
+    top_IN_occupation = df[(df["salary"] == ">50K") & (df["native-country"] == "India")]["occupation"].describe()["top"]
 
 
 
