@@ -4,7 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # 1
-df = None
+df = pd.read_csv("medical_examination.csv")
+df.head()
+df.info()
+df.describe()
+df.columns
 
 # 2
 df['overweight'] = None
