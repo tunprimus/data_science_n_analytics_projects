@@ -32,10 +32,12 @@ df.sample(RANDOM_SAMPLE_SIZE)
 
 def draw_line_plot():
     # Draw line plot
-
-
-
-
+    fig = plt.figure(figsize=(FIGURE_WIDTH,FIGURE_HEIGHT))
+    plt.plot(df, color="orange")
+    plt.title("Daily freeCodeCamp Forum Page Views 5/2016-12/2019")
+    plt.xlabel("Date")
+    plt.ylabel("Page Views")
+    plt.show()
 
     # Save image and return fig (don't change this part)
     fig.savefig('line_plot.png')
