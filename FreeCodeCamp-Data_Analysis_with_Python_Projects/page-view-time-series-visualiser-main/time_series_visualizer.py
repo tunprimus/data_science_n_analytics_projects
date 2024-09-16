@@ -20,7 +20,14 @@ df.describe()
 df.sample(RANDOM_SAMPLE_SIZE)
 
 # Clean data
-df = None
+nor_val_low_limit = df["value"].quantile(0.025)
+nor_val_high_limit = df["value"].quantile(0.975)
+df = df[(df["value"] >= nor_val_low_limit) & (df["value"] <= nor_val_high_limit)]
+df.head()
+df.tail()
+df.info()
+df.describe()
+df.sample(RANDOM_SAMPLE_SIZE)
 
 
 def draw_line_plot():
