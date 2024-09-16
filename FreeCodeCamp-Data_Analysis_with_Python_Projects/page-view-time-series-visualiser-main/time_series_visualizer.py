@@ -4,8 +4,20 @@ import seaborn as sns
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
+pd.set_option("mode.copy_on_write", True)
+
+RANDOM_SAMPLE_SIZE = 13
+GOLDEN_RATIO = 1.618
+FIGURE_WIDTH = 30
+FIGURE_HEIGHT = FIGURE_WIDTH / GOLDEN_RATIO
+
 # Import data (Make sure to parse dates. Consider setting index column to 'date'.)
-df = None
+df = pd.read_csv("fcc-forum-pageviews.csv", index_col="date", parse_dates=True)
+df.head()
+df.tail()
+df.info()
+df.describe()
+df.sample(RANDOM_SAMPLE_SIZE)
 
 # Clean data
 df = None
