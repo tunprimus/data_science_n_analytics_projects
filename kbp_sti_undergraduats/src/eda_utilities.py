@@ -1,18 +1,19 @@
+import json
+from os.path import realpath as realpath
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
-import json
 import xgboost as xgb
-from os.path import realpath as realpath
-from scipy.special.agm import agm as agm
+from scipy.special import agm as agm
 from scipy.stats import ttest_ind
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from sklearn.compose import ColumnTransformer
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
 
 # Monkey patching NumPy for compatibility with version >= 1.24
 np.float = np.float64
@@ -93,11 +94,10 @@ def column_summary(df):
     """
     summary_data = []
 
-    df_columns = df.columns
-    for col_name in df_columns:
+    for col_name in df.columns:
         col_dtype = df[col_name].dtype
         num_of_nulls = df[col_name].isnull().sum()
-        num_of_nun_nulls = df[col_name].notnull.sum()
+        num_of_nun_nulls = df[col_name].notnull().sum()
         num_of_distinct_values = df[col_name].nunique()
 
         if num_of_distinct_values <= 10:
@@ -157,15 +157,14 @@ def column_summary_plus(df):
     """
     result_df = pd.DataFrame(columns=["col_name", "col_dtype", "num_of_distinct_values", "min_value", "max_value", "median_no_na", "average_no_na", "average_non_zero", "null_present", "nulls_num", "non_nulls_num",  "distinct_values"])
 
-    df_columns = df.columns
     # Loop through each column in the DataFrame
-    for column in df_columns:
+    for column in df.columns:
         print(f"Start processing {column} col with {df[column].dtype} dtype")
         # Get column dtype
         col_dtype = df[column].dtype
         # Get distinct values and their counts
-        value_counts = df[column].value_counts()
-        distinct_values = value_counts.index.tolist()
+        value_counts_in_col = df[column].value_counts()
+        distinct_values = value_counts_in_col.index.tolist()
         # Get number of distinct values
         num_distinct_values = len(distinct_values)
         # Get min and max values
@@ -202,12 +201,14 @@ def column_summary_plus(df):
         num_non_nulls = df[column].notnull().sum()
 
         # Distinct_values only take top 10 distinct values count
-        top_10_d_v = value_counts.head(10).index.tolist()
-        top_10_c = value_counts.head(10).tolist()
+        top_10_d_v = value_counts_in_col.head(10).index.tolist()
+        top_10_c = value_counts_in_col.head(10).tolist()
         top_10_d_v_dict = dict(zip(top_10_d_v, top_10_c))
 
         # Append the information to the result DataFrame
-        result_df = result_df.append({"col_name": column, "col_dtype": col_dtype, "num_distinct_values": num_distinct_values, "min_value": min_value, "max_value": max_value, "median_no_na": median, "average_no_na": average, "average_non_zero": average_non_zero, "null_present": null_present, "nulls_num": num_nulls, "non_nulls_num": num_non_nulls, "distinct_values": top_10_d_v_dict})
+        new_data = {"col_name": column, "col_dtype": col_dtype, "num_of_distinct_values": num_distinct_values, "min_value": min_value, "max_value": max_value, "median_no_na": median, "average_no_na": average, "average_non_zero": average_non_zero, "null_present": null_present, "nulls_num": num_nulls, "non_nulls_num": num_non_nulls, "distinct_values": top_10_d_v_dict}
+        new_df = pd.DataFrame([new_data])
+        result_df = pd.concat([result_df, new_df], ignore_index=True)
     
     return result_df
 
@@ -808,3 +809,23 @@ def individual_t_test(df_1, df_2, list_of_features, alpha_value):
     
     df_result = pd.DataFrame(new_list)
     return df_result
+
+if __name__ == "__main__":
+    column_summary()
+    column_summary_plus()
+    dtype_to_json()
+    download_csv_json()
+    json_to_dtype()
+    dataframe_preview()
+    rename_columns()
+    explore_nulls_nans()
+    selective_fill_nans()
+    explore_correlation()
+    display_pairwise_correlation()
+    iv_woe()
+    column_categoriser()
+    model_data_partitioner()
+    model_data_preprocessor_full_return()
+    feature_importance_sorted()
+    get_feature_importance()
+    individual_t_test()

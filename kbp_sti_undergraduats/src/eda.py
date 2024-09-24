@@ -3,12 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from os.path import realpath as realpath
+from eda_utilities import column_summary, column_summary_plus, dtype_to_json, download_csv_json, json_to_dtype, dataframe_preview, rename_columns, explore_nulls_nans, selective_fill_nans, explore_correlation, display_pairwise_correlation, iv_woe, column_categoriser, model_data_partitioner, model_data_preprocessor_full_return, feature_importance_sorted, get_feature_importance, individual_t_test
 
-try:
-    from .utils.EDA_utilities import column_summary
-except ImportError:
-    real_path_to_eda_utilities = realpath("../utils/EDA_utilities")
-    from real_path_to_eda_utilities import column_summary
 
 # Monkey patching NumPy for compatibility with version >= 1.24
 np.float = np.float64
@@ -39,4 +35,7 @@ real_path_to_source_data = realpath(
     "../data/00_raw/Awareness_of_STI_and_Sexual_Behaviour.xlsx"
 )
 
-df = pd.read_excel
+df_raw = pd.read_excel(real_path_to_source_data)
+column_summary(df_raw)
+column_summary_plus(df_raw)
+
