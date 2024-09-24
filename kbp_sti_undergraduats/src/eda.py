@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from os.path import realpath as realpath
-from eda_utilities import column_summary, column_summary_plus, dtype_to_json, download_csv_json, json_to_dtype, dataframe_preview, rename_columns, explore_nulls_nans, selective_fill_nans, explore_correlation, display_pairwise_correlation, iv_woe, column_categoriser, model_data_partitioner, model_data_preprocessor_full_return, feature_importance_sorted, get_feature_importance, individual_t_test
+from eda_utilities import column_summary, column_summary_plus, dtype_to_json, download_csv_json, json_to_dtype, dataframe_preview, numerical_columns_identifier, rename_columns, explore_nulls_nans, selective_fill_nans, explore_correlation, display_pairwise_correlation, iv_woe, column_categoriser, model_data_partitioner, model_data_preprocessor_full_return, feature_importance_sorted, get_feature_importance, individual_t_test
 
 
 # Monkey patching NumPy for compatibility with version >= 1.24
@@ -38,4 +38,6 @@ real_path_to_source_data = realpath(
 df_raw = pd.read_excel(real_path_to_source_data)
 column_summary(df_raw)
 column_summary_plus(df_raw)
+dataframe_preview(df_raw)
+numerical_columns_identifier(df_raw)
 
