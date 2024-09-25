@@ -3,7 +3,28 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from os.path import realpath as realpath
-from eda_utilities import column_summary, column_summary_plus, dtype_to_json, download_csv_json, json_to_dtype, dataframe_preview, numerical_columns_identifier, rename_columns, explore_nulls_nans, selective_fill_nans, explore_correlation, display_pairwise_correlation, iv_woe, column_categoriser, model_data_partitioner, model_data_preprocessor_full_return, feature_importance_sorted, get_feature_importance, individual_t_test
+from ydata_profiling import ProfileReport
+from eda_utilities import (
+    column_summary,
+    column_summary_plus,
+    dtype_to_json,
+    download_csv_json,
+    json_to_dtype,
+    dataframe_preview,
+    numerical_columns_identifier,
+    rename_columns,
+    explore_nulls_nans,
+    selective_fill_nans,
+    explore_correlation,
+    display_pairwise_correlation,
+    iv_woe,
+    column_categoriser,
+    model_data_partitioner,
+    model_data_preprocessor_full_return,
+    feature_importance_sorted,
+    get_feature_importance,
+    individual_t_test,
+)
 
 
 # Monkey patching NumPy for compatibility with version >= 1.24
@@ -35,9 +56,22 @@ real_path_to_source_data = realpath(
     "../data/00_raw/Awareness_of_STI_and_Sexual_Behaviour.xlsx"
 )
 
+real_path_to_interim_data01 = realpath(
+    "../data/01_interim/awareness_of_sti_and_sexual_behaviour_renamed_columns.xlsx"
+)
+
 df_raw = pd.read_excel(real_path_to_source_data)
 column_summary(df_raw)
 column_summary_plus(df_raw)
 dataframe_preview(df_raw)
 numerical_columns_identifier(df_raw)
 
+df_01 = pd.read_excel(real_path_to_interim_data01)
+profile = ProfileReport(df_01, title="KBA STI Undergraduate")
+profile.to_notebook_iframe()
+profile.to_file("awareness_of_sti_and_sexual_behaviour_01.html")
+
+profile01 = ProfileReport(
+    df_01, title="awareness_of_sti_and_sexual_behaviour", explorative=True
+)
+profile01.to_file("awareness_of_sti_and_sexual_behaviour_02.html")

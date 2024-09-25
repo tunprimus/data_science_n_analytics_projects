@@ -2,6 +2,7 @@ import json
 from os.path import realpath as realpath
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -350,11 +351,16 @@ def numerical_columns_identifier(df):
     '''
     numerical_columns = df.select_dtypes(include=[np.number]).columns
 
+    fig_hist = plt.figure(figsize=(30, 20))
+    data_column_len = len(numerical_columns)
     # Perform univariate analysis on numerical columns
-    for column in numerical_columns:
+    for i, column in enumerate(numerical_columns):
         # For continuous variables
         if len(df[column].unique()) > 10: # assuming if unique values > 10, consider it continuous
-            plt.figure(figsize=(FIGURE_WIDTH, FIGURE_HEIGHT))
+            
+            side_length = (np.ceil(data_column_len**(1/2))).astype("int16")
+            gs = gridspec.GridSpec(side_length, side_length)
+            # plt.figure(figsize=(FIGURE_WIDTH, FIGURE_HEIGHT))
             sns.histplot(df[column], kde=True)
             plt.title(f"Histogram of {column}")
             plt.xlabel(column)
