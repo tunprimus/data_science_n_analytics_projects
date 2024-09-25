@@ -61,17 +61,26 @@ real_path_to_interim_data01 = realpath(
 )
 
 df_raw = pd.read_excel(real_path_to_source_data)
+
+df_01 = pd.read_excel(real_path_to_interim_data01)
+
+
+
+# --------------------------------------------------------------
+# Profile data
+# --------------------------------------------------------------
+
 column_summary(df_raw)
 column_summary_plus(df_raw)
 dataframe_preview(df_raw)
 numerical_columns_identifier(df_raw)
 
-df_01 = pd.read_excel(real_path_to_interim_data01)
-profile = ProfileReport(df_01, title="KBA STI Undergraduate")
-profile.to_notebook_iframe()
-profile.to_file("awareness_of_sti_and_sexual_behaviour_01.html")
 
-profile01 = ProfileReport(
+profile_00 = ProfileReport(df_01, title="KBA STI Undergraduate")
+profile_00.to_notebook_iframe()
+profile_00.to_file("awareness_of_sti_and_sexual_behaviour_01.html")
+
+profile_01 = ProfileReport(
     df_01, title="awareness_of_sti_and_sexual_behaviour", explorative=True
 )
-profile01.to_file("awareness_of_sti_and_sexual_behaviour_02.html")
+profile_01.to_file("awareness_of_sti_and_sexual_behaviour_02.html")
