@@ -24,7 +24,7 @@ np.bool = np.bool_
 
 pd.set_option("mode.copy_on_write", True)
 
-FIGURE_HEIGHT = 6
+FIGURE_HEIGHT = 10
 GOLDEN_RATIO = 1.618
 FIGURE_WIDTH = FIGURE_HEIGHT * GOLDEN_RATIO
 FIGURE_DPI = 72
@@ -385,6 +385,9 @@ def numerical_columns_identifier(df):
 
     fig_hist = plt.figure(figsize=(30, 20))
     data_column_len = len(numerical_columns)
+    side_length = (np.ceil(data_column_len ** (1 / 2))).astype("int16")
+
+    fig, axs = plt.subplots(side_length, side_length, figsize=(FIGURE_WIDTH, FIGURE_HEIGHT))
     # Perform univariate analysis on numerical columns
     for i, column in enumerate(numerical_columns):
         # For continuous variables
@@ -392,7 +395,6 @@ def numerical_columns_identifier(df):
             len(df[column].unique()) > 10
         ):  # assuming if unique values > 10, consider it continuous
 
-            side_length = (np.ceil(data_column_len ** (1 / 2))).astype("int16")
             gs = gridspec.GridSpec(side_length, side_length)
             # plt.figure(figsize=(FIGURE_WIDTH, FIGURE_HEIGHT))
             sns.histplot(df[column], kde=True)
@@ -401,8 +403,8 @@ def numerical_columns_identifier(df):
             plt.ylabel("Frequency")
             plt.show()
         else:  # For discrete or ordinal variables
-            plt.figure(figsize=(FIGURE_WIDTH, FIGURE_HEIGHT))
-            ax = sns.countplot(x=column, data=df)
+            ax = axs[i // side_length, i % side_length]
+            # ax = sns.countplot(x=column, data=df)
             plt.title(f"Histogram of {column}")
             plt.xlabel(column)
             plt.ylabel("Count")
@@ -480,7 +482,6 @@ def explore_nulls_nans(df):
             color=None,
             palette=None,
             size=5,
-            edgecolor="matplotlib color",
             linewidth=0,
             hue_norm=None,
             log_scale=None,
@@ -724,7 +725,9 @@ def column_categoriser(df, all_col=False):
     """
     buffer_df = df.copy()
     numerical_columns = buffer_df.select_dtypes(include=[np.number]).columns
+    numerical_columns = list(numerical_columns)
     categorical_columns = buffer_df.select_dtypes(exclude=[np.number]).columns
+    categorical_columns = list(categorical_columns)
     dependent_column = ["target_encoded"]
     independent_column = numerical_columns + categorical_columns
     all_columns = numerical_columns + categorical_columns + dependent_column

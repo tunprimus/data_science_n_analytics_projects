@@ -52,7 +52,7 @@ RANDOM_STATE_SEED = 42
 # Load data
 # --------------------------------------------------------------
 
-real_path_to_source_data = realpath(
+real_path_to_source_data_raw = realpath(
     "../data/00_raw/Awareness_of_STI_and_Sexual_Behaviour.xlsx"
 )
 
@@ -60,9 +60,16 @@ real_path_to_interim_data01 = realpath(
     "../data/01_interim/awareness_of_sti_and_sexual_behaviour_renamed_columns.xlsx"
 )
 
-df_raw = pd.read_excel(real_path_to_source_data)
+real_path_to_source_data = realpath(
+    "../data/00_raw/awareness_of_sti_and_sexual_behaviours-response02.xlsx"
+)
+
+
+df_raw = pd.read_excel(real_path_to_source_data_raw)
 
 df_01 = pd.read_excel(real_path_to_interim_data01)
+
+df = pd.read_excel(real_path_to_source_data)
 
 
 
@@ -84,3 +91,25 @@ profile_01 = ProfileReport(
     df_01, title="awareness_of_sti_and_sexual_behaviour", explorative=True
 )
 profile_01.to_file("awareness_of_sti_and_sexual_behaviour_02.html")
+
+
+# --------------------------------------------------------------
+# Quick data visualisation via violin plots
+# --------------------------------------------------------------
+
+df.head()
+df.info()
+df.describe()
+column_summary(df)
+column_summary_plus(df)
+dataframe_preview(df)
+numerical_columns_identifier(df)
+explore_nulls_nans(df)
+explore_correlation(df)
+column_categoriser(df)
+
+sns.violinplot(data=df, y=df["age_yr"])
+sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"])
+sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8"))
+sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"])
+sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner="quart")
