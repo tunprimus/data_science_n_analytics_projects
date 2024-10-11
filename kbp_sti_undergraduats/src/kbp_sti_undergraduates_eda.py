@@ -24,6 +24,8 @@ from eda_utilities import (
     feature_importance_sorted,
     get_feature_importance,
     individual_t_test,
+    plot_multi_subplots,
+    plot_with_hatch
 )
 
 
@@ -34,14 +36,14 @@ np.object = np.object_
 np.bool = np.bool_
 
 pd.set_option("mode.copy_on_write", True)
-
+plt.style.use(realpath("../../apa_enhanced.mplstyle"))
 
 # --------------------------------------------------------------
 # CONSTANTS
 # --------------------------------------------------------------
 
 
-FIGURE_HEIGHT = 10
+FIGURE_HEIGHT = 20
 GOLDEN_RATIO = 1.618
 FIGURE_WIDTH = FIGURE_HEIGHT * GOLDEN_RATIO
 FIGURE_DPI = 72
@@ -109,7 +111,15 @@ explore_correlation(df)
 column_categoriser(df)
 
 sns.violinplot(data=df, y=df["age_yr"])
+
+plot_with_hatch(sns.violinplot(data=df, y=df["age_yr"]))
+
 sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"])
 sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8"))
+
+plot_with_hatch(sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8")))
+
 sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"])
 sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner="quart")
+
+plot_with_hatch(sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=5, whis_width=2, color="r")))

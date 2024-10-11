@@ -1,7 +1,9 @@
 import json
 from os.path import realpath as realpath
+from itertools import cycle
 
 import matplotlib.pyplot as plt
+from matplotlib.collections import PolyCollection as mplcp
 import matplotlib.gridspec as gridspec
 import numpy as np
 import pandas as pd
@@ -30,6 +32,10 @@ FIGURE_WIDTH = FIGURE_HEIGHT * GOLDEN_RATIO
 FIGURE_DPI = 72
 TEST_SIZE = 0.19
 RANDOM_STATE = 42
+
+hatch = ["/", "\\", "|", "-", "+", "x", "o", "O", ".", "*", "//", "\\\\", "||", "--", "++", "xx", "oo", "OO", "..", "**", "/o", "\\|", "|*", "-\\", "+o", "x*", "o-", "O|", "O.", "*-"]
+iter_hatch = iter(hatch)
+cycle_hatch = cycle(hatch)
 
 """
 Exploratory Data Analysis (EDA) typically consists of several key components or stages that guide data scientists through the process of understanding and exploring a dataset. These components can vary depending on the specific goals of the analysis and the characteristics of the data, but commonly include:
@@ -1181,6 +1187,9 @@ def plot_histogram_with_target(
         # Plot
         multi_histogram(x_data=cost, x_label=labels, bins=4)
 
+def plot_with_hatch(axs_obj):
+    # _ = [i.set_hatch(next(iter_hatch)) for i in axs_obj.get_children() if isinstance(i, mplcp)]
+    _ = [i.set_hatch(next(cycle_hatch)) for i in axs_obj.get_children() if isinstance(i, mplcp)]
 
 def cm_to_inch(*tuple_of_vals):
     """

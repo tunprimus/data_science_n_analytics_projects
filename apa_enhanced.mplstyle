@@ -1,0 +1,114 @@
+## *******************************************************
+## * FONT                                                *
+## *******************************************************
+font.family:	sans-serif
+
+## *******************************************************
+## * FIGURE                                              *
+## *******************************************************
+figure.titlesize:	large	# size of the figure title (```Figure.suptitle()```)
+figure.titleweight:	bold	# weight of the figure title
+figure.subplot.wspace:	0.3     # the amount of width reserved for space between subplots,
+                               # expressed as a fraction of the average axis width
+
+figure.subplot.hspace:	0.3
+
+
+## *******************************************************
+## * AXES                                                *
+## *******************************************************
+axes.facecolor:	white   # axes background colour
+axes.edgecolor:	black   # axes edge colour
+axes.labelcolor:	black
+#character description
+#"-"       solid line style
+#"--"      dashed line style
+#"-."      dash-dot line style
+#":"       dotted line style
+#"."       point marker
+#","       pixel marker
+#"o"       circle marker
+#"v"       triangle_down marker
+#"^"       triangle_up marker
+#"<"       triangle_left marker
+#">"       triangle_right marker
+#"1"       tri_down marker
+#"2"       tri_up marker
+#"3"       tri_left marker
+#"4"       tri_right marker
+#"s"       square marker
+#"p"       pentagon marker
+#"*"       star marker
+#"h"       hexagon1 marker
+#"H"       hexagon2 marker
+#"+"       plus marker
+#"x"       x marker
+#"D"       diamond marker
+#"d"       thin_diamond marker
+#"|"       vline marker
+#"_"       hline marker
+#
+#colour description
+#"b"	blue
+#"g"	green
+#"r"	red
+#"c"	cyan
+#"m"	magenta
+#"y"	yellow
+#"k"	black
+#"w"	white
+#
+axes.prop_cycle:	cycler("color", ["0.37", "0.8", "0.6", "0.4", "0.73", "0.8", "b", "r", "0.37", "0.9", "0.7", "0.5", "0.57", "0.9", "r", "0.37", "b", "0.8", "0.6", "0.4", "r", "0.8", "b", "r", "0.37", "0.9", "0.7", "0.5", "b", "0.9"]) + cycler("linestyle", ["-", "-", "-", "-.","-", ":", "--", "-.", "-", "-.", "-", ":", "--", "-.", "-", "-", "-", "-.", "-", ":","--", "-.", "-", "-.", "-", ":", "--", "-.", "--", ":"]) + cycler("linewidth", [1.2, 1, 0.7, 1, 0.7, 1, 0.7, 1.4, 1.4, 1.2, 0.9, 1.2, 0.9, 1.2, 0.9, 1.2, 1.2, 1, 0.7, 1, 0.7, 1, 0.7, 1.4, 1.2, 0.9, 1.2, 0.9, 1.2, 0.9,])
+#axes.prop_cycle:	cycler("color", ["k", "0.8", "0.6", "0.4", "k", "0.8", "b", "r", "k", "0.9", "0.7", "0.5", "k", "0.9", "r", "k", "b", "0.8", "0.6", "0.4", "k", "0.8", "b", "r", "k", "0.9", "0.7", "0.5", "k", "0.9"]) + cycler("linestyle", ["-", "-", "-", "-.","-", ":", "--", "-.", "-", "-.", "-", ":", "--", "-.", "-", "-", "-", "-.", "-", ":","--", "-.", "-", "-.", "-", ":", "--", "-.", "--", ":"]) + cycler("linewidth", [1.2, 1, 0.7, 1, 0.7, 1, 0.7, 1.4, 1.4, 1.2, 0.9, 1.2, 0.9, 1.2, 0.9, 1.2, 1.2, 1, 0.7, 1, 0.7, 1, 0.7, 1.4, 1.2, 0.9, 1.2, 0.9, 1.2, 0.9,]) + cycler("hatch", ["/", "\\", "|", "-", "+", "x", "o", "O", ".", "*", "//", "\\\\", "||", "--", "++", "xx", "oo", "OO", "..", "**", "/o", "\\|", "|*", "-\\", "+o", "x*", "o-", "O|", "O.", "*-"])
+#axes.prop_cycle:	cycler("color", ["k", "0.8", "0.6", "0.4", "k", "0.8", "b", "r"]) + cycler("linestyle", ["-", "-", "-", "-.","-", ":","--", "-."]) + cycler('linewidth', [1.2, 1.2, 1, 0.7, 1, 0.7, 1, 0.7])
+		          # colour cycle for plot lines as list of string colourspecs:
+		          # single letter, long name, or web-style hex
+		          # As opposed to all other parameters in this file, the colour
+		          # values must be enclosed in quotes for this parameter,
+		          # e.g. `1f77b4`, instead of 1f77b4.
+		          # See also https://matplotlib.org/tutorials/intermediate/color_cycle.html
+		          # for more details on prop_cycle usage.
+axes.autolimit_mode:	round_numbers
+axes.axisbelow:	line 
+axes.labelpad:	5.0        # space between label and axis
+
+axes.spines.top:	False	# display axis spines
+axes.spines.right:	False
+axes.spines.bottom:	True	# display axis spines
+axes.spines.left:	True
+
+axes.grid:	False
+axes.labelweight:	bold
+axes.titleweight:	bold
+
+
+## *******************************************************
+## * ERROR BAR                                           *
+## *******************************************************
+errorbar.capsize:	10
+
+## *******************************************************
+## * HATCHES                                          *
+## *******************************************************
+hatch.linewidth: 2
+hatch.color: 0.37
+
+## *******************************************************
+## * TICKS                                               *
+## *******************************************************
+xtick.labelsize:	small	# fontsize of the x any y ticks
+ytick.labelsize:	small
+xtick.color:	black
+ytick.color:	black
+
+## *******************************************************
+## * SAVING FIGURES                                      *
+## *******************************************************
+savefig.dpi: 72
+savefig.format:	svg, png
+savefig.bbox:	tight
+savefig.directory: 
+
+ps.papersize:	A4
+pdf.fonttype: 42
+ps.fonttype: 42
