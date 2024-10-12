@@ -679,7 +679,7 @@ def iv_woe(data, target, bins=10, show_woe=False):
 
         # Calculate the number of events in each group (bin)
         evt = buffer_df.groupby("x", as_index=False).agg({"y": ["count", "sum"]})
-        evt.columns = ["Cutoff", "N", "Events"]
+        evt.columns = ["Cut-off", "N", "Events"]
 
         # Calculate the % of events in each group
         evt["%_of_Events"] = np.maximum(evt["Events"], 0.5) / evt["Events"].sum()
@@ -1187,7 +1187,34 @@ def plot_histogram_with_target(
         # Plot
         multi_histogram(x_data=cost, x_label=labels, bins=4)
 
-def plot_with_hatch(axs_obj):
+def add_mean_median_mode_quartile_to_violin_plot(df, col_x, col_y=None, hue=None, split=False, gap=0):
+    if col_y:
+        means_val = df.groupby(col_x)[col_y].mean()
+        modes_val = df.groupby(col_x)[col_y].agg(lambda x: pd.Series.mode(x)[0])
+    else:
+        means_val = df[col_x].mean()
+        modes_val = df[col_x].agg(lambda x: pd.Series.mode(x)[0])
+    fig, ax = plt.subplots()
+    if col_y:
+        sns.violinplot(data=df, x=df[col_x], y=df[col_y], hue=df[hue], split=split, gap=gap, inner="quart")
+    else:
+        sns.violinplot(data=df, y=df[col_x], hue=df[hue], split=split, gap=gap, inner="quart")
+    plt.setp(ax.collections, alpha=0.3)
+    if isinstance(means_val, np.float64):
+        x_mean = means_val
+    else:
+        x_mean=range(len(means_val))
+    plt.scatter(x=x_mean, y=means_val, c="r")
+    if isinstance(modes_val, np.float64):
+        x_mode = modes_val
+    else:
+        x_mode=range(len(modes_val))
+    plt.scatter(x=x_mode, y=modes_val)
+    for val in ax.lines:
+        ax.text(val.get_data()[0][val.get_data()[0].nonzero()][0], val.get_data()[1][0], f"{val.get_data()[1][0]:.1f}", size=7)
+    return ax
+
+def add_hatch_to_plot(axs_obj):
     # _ = [i.set_hatch(next(iter_hatch)) for i in axs_obj.get_children() if isinstance(i, mplcp)]
     _ = [i.set_hatch(next(cycle_hatch)) for i in axs_obj.get_children() if isinstance(i, mplcp)]
 

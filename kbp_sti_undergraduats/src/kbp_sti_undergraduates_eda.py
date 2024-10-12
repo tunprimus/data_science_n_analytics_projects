@@ -25,7 +25,8 @@ from eda_utilities import (
     get_feature_importance,
     individual_t_test,
     plot_multi_subplots,
-    plot_with_hatch
+    add_mean_median_mode_quartile_to_violin_plot,
+    add_hatch_to_plot
 )
 
 
@@ -46,7 +47,7 @@ plt.style.use(realpath("../../apa_enhanced.mplstyle"))
 FIGURE_HEIGHT = 20
 GOLDEN_RATIO = 1.618
 FIGURE_WIDTH = FIGURE_HEIGHT * GOLDEN_RATIO
-FIGURE_DPI = 72
+FIGURE_DPI = 300
 TEST_SIZE = 0.19
 RANDOM_STATE_SEED = 42
 
@@ -110,16 +111,24 @@ explore_nulls_nans(df)
 explore_correlation(df)
 column_categoriser(df)
 
+print(df["level"])
+df["level_str"] = df["level"].dropna().astype(int).map(lambda x: str(x) + "L")
+print(df["level_str"])
+
 sns.violinplot(data=df, y=df["age_yr"])
 
-plot_with_hatch(sns.violinplot(data=df, y=df["age_yr"]))
+add_hatch_to_plot(sns.violinplot(data=df, y=df["age_yr"]))
 
 sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"])
 sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8"))
 
-plot_with_hatch(sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8")))
+add_hatch_to_plot(sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8")))
 
 sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"])
 sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner="quart")
 
-plot_with_hatch(sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=5, whis_width=2, color="r")))
+add_hatch_to_plot(sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=5, whis_width=2, color="r")))
+
+add_mean_median_mode_quartile_to_violin_plot(df, col_x="age_yr", hue="sex", split=True, gap=.025)
+add_mean_median_mode_quartile_to_violin_plot(df, col_x="level_str", col_y="age_yr", hue="sex", split=True, gap=.025)
+
