@@ -56,7 +56,7 @@ EDA_L2: Transformation of Original Data
 i. Change column names to all be in small letters and spaces to underscore.
 ii. Fill in the empty null / NaN rows with reasonable values; after visualisation
 iii. Change the datatype of each column to more appropriate ones.
-iv. Do data validation 
+iv. Do data validation
 v. Mapping / binning of categorical features
 
 EDA_L3: Understanding of Transformed Data
@@ -1095,6 +1095,37 @@ def multi_plots_with_pair_grid(df):
     """
     sns.pairplot(df)
 
+
+def annotate_multiple_violin_plots(df, cat_var, num_var):
+    sns.set_style("whitegrid")
+    ax = (df
+            .assign(count=lambda df: df[cat_var].map(df.groupby(by=[cat_var])[num_var].count()))
+            .assign(grouper=lambda df: df[cat_var].astype(str) + "\nN = " + df["count"].astype(str))
+            .sort_values(by=cat_var)
+            .pipe((sns.violinplot, df), x="grouper", y=num_var)
+            .set(xlabel=cat_var, ylabel=num_var)
+        )
+    return ax
+
+
+def annotate_median_violin_plots(df, cat_var, num_var):
+    sns.set_style("darkgrid")
+    ax = sns.violinplot(x=cat_var, y=num_var, data=df)
+
+    median_val = df.groupby([cat_var])[num_var].median().values
+    num_cat = df[cat_var].value_counts().values
+    num_cat = [str(x) for x in num_cat.tolist()]
+    num_cat = ["n: " + i for i in num_cat]
+
+    pos = range(len(num_cat))
+    for tick, label in zip(pos, ax.get_xticklabels()):
+        ax.text(pos[tick], median_val[tick] + 0.03, num_cat[tick], horizontalalignment="center", size="small", color="w", weight="semibold")
+    # Add title and labels
+    plt.title(f"Annotated Violin Plot of {num_var} by {cat_var}")
+    plt.xlabel(f"{cat_var}")
+    plt.ylabel(f"{num_var}")
+    # Show the plot
+    plt.show()
 
 def multi_boxplot(df, target_col, n_rows, n_cols, orient="v"):
     df_columns = df.columns

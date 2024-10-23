@@ -115,9 +115,9 @@ print(df["level"])
 df["level_str"] = df["level"].dropna().astype(int).map(lambda x: str(x) + "L")
 print(df["level_str"])
 
-sns.violinplot(data=df, y=df["age_yr"])
+sns.violinplot(data=df, y=df["age_yr"], inner_kws=dict(box_width=15, whis_width=2, color=".8")).set(title="Overall Age Distribution")
 
-add_hatch_to_plot(sns.violinplot(data=df, y=df["age_yr"]))
+add_hatch_to_plot(sns.violinplot(data=df, y=df["age_yr"], inner_kws=dict(box_width=15, whis_width=2, color=".8")).set_title("Overall Age Distribution"))
 
 sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"])
 sns.violinplot(data=df, y=df["age_yr"], hue=df["sex"], split=True, gap=.025, inner_kws=dict(box_width=15, whis_width=2, color=".8"))
@@ -131,4 +131,7 @@ add_hatch_to_plot(sns.violinplot(data=df, x=df["level"], y=df["age_yr"], hue=df[
 
 add_mean_median_mode_quartile_to_violin_plot(df, col_x="age_yr", hue="sex", split=True, gap=.025)
 add_mean_median_mode_quartile_to_violin_plot(df, col_x="level_str", col_y="age_yr", hue="sex", split=True, gap=.025)
+
+add_mean_median_mode_quartile_to_violin_plot(sns.violinplot(data=df, y=df["age_yr"], inner_kws=dict(box_width=15, whis_width=2, color=".8")))
+
 
