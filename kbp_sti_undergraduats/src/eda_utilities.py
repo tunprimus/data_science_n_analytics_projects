@@ -250,7 +250,7 @@ def column_summary_plus(df):
 
 
 ### To Save Pandas to CSV
-def dtype_to_json(pdf, json_file_path):
+def dtype_to_json(p_df, json_file_path):
     """
     Parameters
     ----------
@@ -270,7 +270,7 @@ def dtype_to_json(pdf, json_file_path):
     -------
     download_csv_json(df, "/home/some_dir/file_1")
     """
-    dtype_dict = pdf.dtypes.apply(lambda x: str(x)).to_dict()
+    dtype_dict = p_df.dtypes.apply(lambda x: str(x)).to_dict()
 
     with open(json_file_path, "w") as json_file:
         json.dump(dtype_dict, json_file)
@@ -302,6 +302,7 @@ def download_csv_json(df, main_path):
 
     dtypedict = dtype_to_json(df, json_fp)
     df.to_csv(csv_path, index=False)
+    json.dump(dtypedict, json_fp)
 
     return csv_path, json_fp
 
@@ -389,7 +390,7 @@ def numerical_columns_identifier(df):
     """
     numerical_columns = df.select_dtypes(include=[np.number]).columns
 
-    fig_hist = plt.figure(figsize=(30, 20))
+    _ = plt.figure(figsize=(30, 20))
     data_column_len = len(numerical_columns)
     side_length = (np.ceil(data_column_len ** (1 / 2))).astype("int16")
 
@@ -401,7 +402,7 @@ def numerical_columns_identifier(df):
             len(df[column].unique()) > 10
         ):  # assuming if unique values > 10, consider it continuous
 
-            gs = gridspec.GridSpec(side_length, side_length)
+            _ = gridspec.GridSpec(side_length, side_length)
             # plt.figure(figsize=(FIGURE_WIDTH, FIGURE_HEIGHT))
             sns.histplot(df[column], kde=True)
             plt.title(f"Histogram of {column}")
