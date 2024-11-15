@@ -1,14 +1,14 @@
 import json
-from os.path import realpath as realpath
-from itertools import cycle
-
-import matplotlib.pyplot as plt
-from matplotlib.collections import PolyCollection as mplcp
-import matplotlib.gridspec as gridspec
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import xgboost as xgb
+import scipy.stats as ss
+import matplotlib.pyplot as plt
+
+from os.path import realpath as realpath
+from itertools import cycle
+from matplotlib.collections import PolyCollection as mplcp
 from scipy.special import agm as agm
 from scipy.stats import ttest_ind
 from sklearn.compose import ColumnTransformer
@@ -388,7 +388,7 @@ def numerical_columns_identifier(df):
     -----
     We consider a column as continuous if it has more than 10 unique values.
     """
-    numerical_columns = df.select_dtypes(include=[np.number]).columns
+    numerical_columns = df.select_dtypes(include=["int64", "float64", np.number]).columns
 
     _ = plt.figure(figsize=(30, 20))
     data_column_len = len(numerical_columns)
@@ -613,6 +613,36 @@ def explore_correlation(df):
     print(f"Maximum pairwise correlation: {max_correlation:.2f}")
 
 
+def cramers_v(x, y):
+    """ calculate Cramer's V statistic for categorial-categorial association.
+        uses correction from Bergsma and Wicher,
+        Journal of the Korean Statistical Society 42 (2013): 323-328
+        https://stackoverflow.com/a/54625589
+    """
+    result = -1
+    if len(x.value_counts()) == 1:
+        print("First variable is a constant")
+    elif len(y.value_counts()) == 1:
+        print("Second variable is a constant")
+    else:
+        confusion_matrix = pd.crosstab(x, y)
+
+    if confusion_matrix.shape[0] == 2:
+        correct = False
+    else:
+        correct = True
+
+        chi2 = ss.chi2_contingency(confusion_matrix, correction=correct)[0]
+        n = sum(confusion_matrix.sum())
+        phi2 = chi2 / n
+        r, k = confusion_matrix.shape
+        phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (n - 1))
+        rcorr = r - ((r - 1) ** 2) / (n - 1)
+        kcorr = k - ((k - 1) ** 2) / (n - 1)
+        result = np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
+    return round(result, 6)
+
+
 def display_pairwise_correlation(df_input, col_1, col_2):
     """
     Displays the pairwise correlation between two columns in a given DataFrame.
@@ -639,6 +669,26 @@ def display_pairwise_correlation(df_input, col_1, col_2):
 
         correlation_value = df_input[col_1].corr(df_input[col_2])
         return f"Correlation value between {col_1} and {col_2} is: {correlation_value}"
+
+
+# Calculate correlation ratio
+def correlation_ratio(categories, measurements):
+    fcat, _ = pd.factorize(categories)
+    cat_num = np.max(fcat) + 1
+    y_avg_array = np.zeros(cat_num)
+    n_array = np.zeros(cat_num)
+    for i in range(0, cat_num):
+        cat_measures = measurements[np.argwhere(fcat == i).flatten()]
+        n_array[i] = len(cat_measures)
+        y_avg_array[i] = np.average(cat_measures)
+        y_total_avg = np.sum(np.multiply(y_avg_array, n_array) / np.sum(n_array))
+        numerator = np.sum(np.multiply(n_array, np.power(np.subtract(y_avg_array, y_total_avg), 2)))
+        denominator = np.sum(np.power(np.subtract(measurements, y_total_avg), 2))
+        if numerator == 0:
+            eta = 0.0
+        else:
+            eta = np.sqrt(numerator / denominator)
+        return eta
 
 
 def iv_woe(data, target, bins=10, show_woe=False):
@@ -731,9 +781,9 @@ def column_categoriser(df, all_col=False):
         all_col is True.
     """
     buffer_df = df.copy()
-    numerical_columns = buffer_df.select_dtypes(include=[np.number]).columns
+    numerical_columns = buffer_df.select_dtypes(include=["int64", "float64", np.number]).columns
     numerical_columns = list(numerical_columns)
-    categorical_columns = buffer_df.select_dtypes(exclude=[np.number]).columns
+    categorical_columns = buffer_df.select_dtypes(include=["object", "category"]).columns
     categorical_columns = list(categorical_columns)
     dependent_column = ["target_encoded"]
     independent_column = numerical_columns + categorical_columns
@@ -825,9 +875,7 @@ def model_data_preprocessor_full_return(df):
 
 
 # Function for getting feature importance sorted
-def feature_importance_sorted(
-    classification_model_input, X_train, y_train, feature_importance_input=None
-):
+def feature_importance_sorted(classification_model_input, X_train, y_train, feature_importance_input=None):
     """
     Takes in a classification model, training data and labels, and returns a DataFrame with each feature and its importance in the model, sorted in descending order.
 
@@ -995,9 +1043,7 @@ def arrange_subplots(xs, ys, n_plots=6):
         ax.plot(xs[i], ys[i])
 
 
-def plot_multiple_subplot(
-    list_of_names=[], values_to_plot=[], fig=None, layout="grid", vector_length=6
-):
+def plot_multiple_subplot(list_of_names=[], values_to_plot=[], fig=None, layout="grid", vector_length=6):
     _subplots = {}
 
     def set_named_subplot(name, fig=None, layout="grid"):
@@ -1128,6 +1174,7 @@ def annotate_median_violin_plots(df, cat_var, num_var):
     # Show the plot
     plt.show()
 
+
 def multi_boxplot(df, target_col, n_rows, n_cols, orient="v"):
     df_columns = df.columns
     names = df_columns.drop(target_col)
@@ -1166,9 +1213,7 @@ def multiple_heatmaps_facet_grid(df, target_col, column_wrap=3):
     )
 
 
-def plot_histogram_with_target(
-    df_1, df_2, target_cols=["col_1", "col_2", "col_3", "col_4"]
-):
+def plot_histogram_with_target(df_1, df_2, target_cols=["col_1", "col_2", "col_3", "col_4"]):
     df_to_use_01 = df_1.drop(~target_cols, axis=1)
     # To aggregate by `col_4`
     df_to_use_02 = (
@@ -1219,6 +1264,7 @@ def plot_histogram_with_target(
         # Plot
         multi_histogram(x_data=cost, x_label=labels, bins=4)
 
+
 def add_mean_median_mode_quartile_to_violin_plot(df, col_x, col_y=None, hue=None, split=False, gap=0):
     if col_y:
         means_val = df.groupby(col_x)[col_y].mean()
@@ -1246,9 +1292,11 @@ def add_mean_median_mode_quartile_to_violin_plot(df, col_x, col_y=None, hue=None
         ax.text(val.get_data()[0][val.get_data()[0].nonzero()][0], val.get_data()[1][0], f"{val.get_data()[1][0]:.1f}", size=7)
     return ax
 
+
 def add_hatch_to_plot(axs_obj):
     # _ = [i.set_hatch(next(iter_hatch)) for i in axs_obj.get_children() if isinstance(i, mplcp)]
     _ = [i.set_hatch(next(cycle_hatch)) for i in axs_obj.get_children() if isinstance(i, mplcp)]
+
 
 def cm_to_inch(*tuple_of_vals):
     """
