@@ -3,39 +3,42 @@ import sqlite3
 import pickle
 import codecs
 import sys.version as version
-
+from os.path import realpath as realpath
 
 
 python_version = version
+
 """
 Adapted from https://gist.github.com/molpopgen/aa6225a18466591213880d320748f9bc
 """
 def to_pickle_encoded(filename):
     """
     Read a file and encode it using base64 for storage in a sqlite database.
-    
+
     Parameters
     ----------
     filename : str
         The path to the file to read.
-    
+
     Returns
     -------
     str
         The base64 encoded string.
     """
-    with open(filename, "rb") as fin:
+    real_path_to_filename = realpath(filename)
+    with open(real_path_to_filename, "rb") as fin:
         to_dump = pickle.dumps(fin, -1)
         filename_encoded = codecs.encode(to_dump, "base64").decode()
         filename_encoded = f"{filename_encoded}-{python_version}"
-    
+        print(filename_encoded)
+
     return filename_encoded
 
 
 def save_pickle_to_sqlite(pickled_file, db_name="test.db", id_val=1):
     """
     Save a pickled file to a sqlite database.
-    
+
     Parameters
     ----------
     pickled_file : str
@@ -44,16 +47,20 @@ def save_pickle_to_sqlite(pickled_file, db_name="test.db", id_val=1):
         The name of the database to store the file in.
     id_val : int
         The id to use for the insert statement.
-    
+
     Returns
     -------
     int
         The id of the inserted row.
     """
     with sqlite3.connect(db_name) as conn:
-        conn.execute("create table pickle_store (id integer, pickled text, python_version text)")
         conn.execute(
-            'insert into pickle_store values ({}, "{}", "{}")'.format(id_val, pickled_file, python_version)
+            "create table pickle_store (id integer, pickled text, python_version text)"
+        )
+        conn.execute(
+            'insert into pickle_store values ({}, "{}", "{}")'.format(
+                id_val, pickled_file, python_version
+            )
         )
         conn.commit()
         print(id_val)
@@ -63,14 +70,14 @@ def save_pickle_to_sqlite(pickled_file, db_name="test.db", id_val=1):
 def load_pickle_from_sqlite(db_name="test.db", id_val=1):
     """
     Load a pickled file from a sqlite database.
-    
+
     Parameters
     ----------
     db_name : str
         The name of the database to load the file from.
     id_val : int
         The id to use for the select statement.
-    
+
     Returns
     -------
     object
