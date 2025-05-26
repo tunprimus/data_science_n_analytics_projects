@@ -1,0 +1,49 @@
+.
+├── data
+│   ├── 00-raw					<- The original, immutable data dump.
+│   ├── 01-interim				<- Intermediate data that has been transformed.
+│   ├── 02-processed			<- Data for analysis.
+│   ├── 03-final				<- The final, canonical data sets for modelling.
+│   ├── external				<- Data from third party sources.
+│   └── README.md
+├── docs						<- A default Sphinx project; see sphinx-doc.org for details.
+├── LICENCE
+├── Makefile					<- Makefile with commands like `make data` or `make train`.
+├── models						<- Trained and serialised models, model predictions or model summaries.
+├── notebooks					<- Jupyter notebooks. Naming convention is a number (for ordering),
+│                         			the creator's initials, and a short `-` delimited description, e.g.
+│                         			`1.0-jqp-initial-data-exploration`.
+├── README.md					<- The top-level README for developers using this project.
+├── references					<- Data dictionaries, manuals and all other explanatory materials.
+│   └── folder_structure.txt
+├── reports						<- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures					<- Generated graphics and figures to be used in reporting.
+├── requirements.txt			<- The requirements file for reproducing the analysis environment, e.g.
+│                         			generated with `pigar generate` or `pip freeze > requirements.txt`.
+├── setup.py					<- Make this project pip installable with `pip install -e`.
+└── src							<- Source code for use in this project.
+    ├── __init__.py				<- Makes src a Python module.
+    ├── analysis				<- Scripts to analyse and create reports from the data.
+    ├── config
+    │   └── config.py
+    ├── features				<- Scripts to turn raw data into features for modelling.
+    │   ├── build_features.py
+    │   └── __init__.py
+    ├── get_data				<- Scripts to download or generate data.
+    │   ├── __init__.py
+    │   └── make_dataset.py
+    ├── models					<- Scripts to train models and then use trained models to make
+    │   │                 			predictions
+    │   ├── __init__.py
+    │   ├── predict_model.py
+    │   └── train_model.py
+    ├── preprocessing			<- Scripts to clean and process data.
+    ├── test					<- Tests for all the functionalities and models.
+    ├── utils					<- Common utility scripts.
+    │   ├── display.py
+    │   └── __init__.py
+    └── visualisation			<- Scripts to create exploratory and results oriented visualisations.
+        ├── __init__.py
+        ├── plot_settings.py
+        └── visualise.py
+
