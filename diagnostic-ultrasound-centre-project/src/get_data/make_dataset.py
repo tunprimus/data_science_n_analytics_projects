@@ -8,8 +8,13 @@ except ImportError:
     import pandas as pd
     pd.set_option("mode.copy_on_write", True)
 from os.path import expanduser, realpath
+from pathlib import Path
 
-sys.path.append(realpath(expanduser("../../../diagnostic-ultrasound-centre-project")))
+proj_dir_path = Path.cwd().parent.parent
+proj_dir_name = Path.cwd().parent.parent.name
+sys.path.append(realpath(expanduser(proj_dir_path)))
+
+print(f"Project directory name is: {proj_dir_name}")
 
 from data_directories import data_directories
 from src.utils.display import printdf
