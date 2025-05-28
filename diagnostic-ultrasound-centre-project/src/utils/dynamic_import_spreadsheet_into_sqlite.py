@@ -67,7 +67,7 @@ def insert_into_db(table_name, df, path_to_database="./test.db"):
         try:
             for _, row in df.iterrows():
                 cur.execute(
-                    f"INSERT INTO {table_name} ({col_labels}) VALUES ({', '.join(['?'] * len(df.columns))})",
+                    f"INSERT OR REPLACE INTO {table_name} ({col_labels}) VALUES ({', '.join(['?'] * len(df.columns))})",
                     tuple(row),
                 )
         except:
