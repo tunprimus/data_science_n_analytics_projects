@@ -20,6 +20,7 @@ from data_directories import data_directories
 from src.utils.display import printdf
 from src.utils.standardise_column_names import standardise_column_names
 from src.utils.reorder_pandas_columns import reorder_pandas_columns
+from src.utils.dynamic_import_spreadsheet_into_sqlite import create_table, insert_into_db, process_csv_into_sqlite, process_spreadsheet_into_sqlite
 
 # Define constants
 GOLDEN_RATIO = 1.618033989
@@ -32,12 +33,16 @@ RANDOM_SEED = 42
 
 # Import raw data
 raw_data = data_directories["raw_data_dir"] + "/000-real-ultrasound-patronage-data.xlsx"
+raw_data02 = data_directories["raw_data_dir"] + "/real-ultrasound-patronage-data.xlsx"
 
 df_raw_01 = pd.read_excel(raw_data, sheet_name="Patronage_box_data")
 df_raw_02 = pd.read_excel(raw_data, sheet_name="Patronage_flat_data")
 
-printdf(df_raw_01)
-printdf(df_raw_02)
+print(type(df_raw_01))
+print(type(df_raw_01.columns))
+
+# printdf(df_raw_01)
+# printdf(df_raw_02)
 
 df_raw_01.describe().T
 df_raw_02.describe().T
@@ -45,8 +50,8 @@ df_raw_02.describe().T
 df_standardised_01 = standardise_column_names(df_raw_01)
 df_standardised_02 = standardise_column_names(df_raw_02)
 
-printdf(df_standardised_01)
-printdf(df_standardised_02)
+# printdf(df_standardised_01)
+# printdf(df_standardised_02)
 
 remap_month_name_to_number = {
     "Jan.": 1,
@@ -91,9 +96,19 @@ df_standardised_01["year_month"] = df_standardised_01["datetime"].dt.strftime("%
 
 df_standardised = df_standardised_01[["datetime", "year_month", "year", "month", "obstetrics", "pelvic", "abdominal", "transrectal", "breast", "transvaginal", "folliculometry", "thyroid_neck", "scrotal", "doppler", "anomaly", "ocular", "musculoskeletal", "other_special_scans", "echocardiography"]]
 
-path_for_csv = data_directories["interim_data_dir"] + "/df_standardised.csv"
+path_for_csv = data_directories["interim_data_dir"] + "/df_standardised" + "-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".csv"
 
 df_standardised.to_csv(path_for_csv, index=False)
 
 printdf(df_standardised)
+
+
+# Database directory for storing raw and processed data
+sqlite_db_file = data_directories["database_dir"] + "/data_storage.sqlite"
+
+process_spreadsheet_into_sqlite(raw_data02, sheet_name=None, path_to_database=sqlite_db_file)
+
+real_path_to_standardised_csv = realpath(expanduser(data_directories["interim_data_dir"] + "/df_standardised.csv"))
+
+process_csv_into_sqlite(real_path_to_standardised_csv, path_to_database=sqlite_db_file)
 
