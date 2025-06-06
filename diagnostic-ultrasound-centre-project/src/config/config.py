@@ -18,7 +18,7 @@ reports_dir = realpath(expanduser(proj_dir_name + "/reports"))
 src_dir = realpath(expanduser(proj_dir_name + "/src"))
 
 # Define dictionary for all the top level directories and their paths
-top_directories = {
+data_directories = {
     "data_dir": data_dir,
     "docs_dir": docs_dir,
     "models_dir": models_dir,
