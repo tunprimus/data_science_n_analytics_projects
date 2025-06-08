@@ -1,48 +1,83 @@
 .
+├── business_problems_R_n_D
+│   ├── business-problems.md
+│   └── data-documentation.md
 ├── data
-│   ├── 00-raw					<- The original, immutable data dump.
-│   ├── 01-interim				<- Intermediate data that has been transformed.
-│   ├── 02-processed			<- Data for analysis.
-│   ├── 03-final				<- The final, canonical data sets for modelling.
-│   ├── external				<- Data from third party sources.
+│   ├── 00-raw						<- The original, immutable data dump.
+│   ├── 01-interim					<- Intermediate data that has been transformed.
+│   ├── 02-retraining				<- Data for retraining.
+│   ├── 03-final					<- The final, canonical data sets for modelling.
+│   ├── database
+│   │   ├── data_storage.duckdb
+│   │   └── data_storage.sqlite
+│   ├── external					<- Data from third party sources.
 │   └── README.md
-├── docs						<- A default Sphinx project; see sphinx-doc.org for details.
 ├── LICENCE
-├── Makefile					<- Makefile with commands like `make data` or `make train`.
-├── models						<- Trained and serialised models, model predictions or model summaries.
-├── notebooks					<- Jupyter notebooks. Naming convention is a number (for ordering),
+├── Makefile						<- Makefile with commands like `make data` or `make train`.
+├── models							<- Trained and serialised models, model predictions or model summaries.
+├── notebooks						<- Jupyter notebooks. Naming convention is a number (for ordering),
 │                         			the creator's initials, and a short `-` delimited description, e.g.
 │                         			`1.0-jqp-initial-data-exploration`.
-├── README.md					<- The top-level README for developers using this project.
-├── references					<- Data dictionaries, manuals and all other explanatory materials.
+├── README.md						<- The top-level README for developers using this project.
+├── references						<- Data dictionaries, manuals and all other explanatory materials.
 │   └── folder_structure.txt
-├── reports						<- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures					<- Generated graphics and figures to be used in reporting.
-├── requirements.txt			<- The requirements file for reproducing the analysis environment, e.g.
+├── reports							<- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures						<- Generated graphics and figures to be used in reporting.
+├── requirements.txt				<- The requirements file for reproducing the analysis environment, e.g.
 │                         			generated with `pigar generate` or `pip freeze > requirements.txt`.
-├── setup.py					<- Make this project pip installable with `pip install -e`.
-└── src							<- Source code for use in this project.
-    ├── __init__.py				<- Makes src a Python module.
-    ├── analysis				<- Scripts to analyse and create reports from the data.
-    ├── config
-    │   └── config.py
-    ├── features				<- Scripts to turn raw data into features for modelling.
-    │   ├── build_features.py
-    │   └── __init__.py
-    ├── get_data				<- Scripts to download or generate data.
+├── setup.py						<- Make this project pip installable with `pip install -e`.
+└── src								<- Source code for use in this project.
+    ├── 01_get_data					<- Scripts to download or generate data.
+    │   ├── data_directories.py
     │   ├── __init__.py
     │   └── make_dataset.py
-    ├── models					<- Scripts to train models and then use trained models to make
+    ├── 02_data_processing			<- Scripts to clean and process data.
+    │   └── __init__.py
+    ├── 03_eda						<- Scripts to analyse and create reports from the data.
+    │   ├── data_segmentation.py
+    │   ├── dependency_analysis.py
+    │   ├── distribution_analysis.py
+    │   └── __init__.py
+    ├── 04_comprehensive_analysis	<- Scripts to analyse and create reports from the data.
+    │   ├── advanced_analyses.py
+    │   ├── hypothesis_testing.py
+    │   └── __init__.py
+    ├── 05_feature_engr				<- Scripts to turn raw data into features for modelling.
+    │   ├── data_imbalance_handling.py
+    │   ├── feature_creation.py
+    │   ├── feature_selection.py
+    │   └── __init__.py
+    ├── 06_model_devp				<- Scripts to train models and then use trained models to make
     │   │                 			predictions
     │   ├── __init__.py
-    │   ├── predict_model.py
+    │   ├── test_model.py
     │   └── train_model.py
-    ├── preprocessing			<- Scripts to clean and process data.
-    ├── test					<- Tests for all the functionalities and models.
-    ├── utils					<- Common utility scripts.
-    │   ├── display.py
+    ├── 07_model_deploy
+    │   ├── create_api.py
+    │   ├── create_webapp.py
     │   └── __init__.py
-    └── visualisation			<- Scripts to create exploratory and results oriented visualisations.
+    ├── 08_model_maintenance
+    │   ├── concept_drift_detection.py
+    │   ├── finetuning.py
+    │   ├── __init__.py
+    │   ├── monitoring_n_logging.py
+    │   └── retraining.py
+    ├── config
+    │   ├── config.py
+    │   └── __init__.py
+    ├── __init__.py					<- Makes src a Python module.
+    ├── test						<- Tests for all the functionalities and models.
+    │   └── __init__.py
+    ├── utils						<- Common utility scripts.
+    │   ├── advanced_beeswarm_plot.py
+    │   ├── auto_pip_finder.py
+    │   ├── convert_csv_to_sql_insert_statement.py
+    │   ├── display.py
+    │   ├── dynamic_import_spreadsheet_into_sqlite.py
+    │   ├── __init__.py
+    │   ├── standardise_column_names.py
+    │   └── timing_function.py
+    └── visualisation				<- Scripts to create exploratory and results oriented visualisations.
         ├── __init__.py
         ├── plot_settings.py
         └── visualise.py
