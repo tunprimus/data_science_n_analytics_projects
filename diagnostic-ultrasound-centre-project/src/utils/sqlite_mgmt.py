@@ -18,15 +18,17 @@ def load_df_from_sqlite_table(table_name, path_to_sqlite, sql_query):
     """
     Loads a pandas DataFrame from a specified SQLite database table.
 
-    Parameters:
-        table_name (str): The name of the table to load from.
+    Parameters
+    ----------
+    table_name (str): The name of the table to load from.
 
-        path_to_sqlite (str): The path to the SQLite database file.
+    path_to_sqlite (str): The path to the SQLite database file.
 
-        sql_query (str): The SQL query to execute to load the data.
+    sql_query (str): The SQL query to execute to load the data.
 
-    Returns:
-        pd.DataFrame: A pandas DataFrame containing the loaded data.
+    Returns
+    -------
+    pd.DataFrame: A pandas DataFrame containing the loaded data.
     """
     real_path_to_sqlite = realpath(expanduser(path_to_sqlite))
 
