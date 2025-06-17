@@ -1,1 +1,66 @@
 #!/usr/bin/env python3
+#!/usr/bin/env python3
+import sqlite3
+import sys
+
+import matplotlib.pyplot as plt
+
+try:
+    import fireducks.pandas as pd
+except ImportError:
+    import pandas as pd
+
+    pd.set_option("mode.copy_on_write", True)
+from os.path import expanduser, realpath
+from pathlib import Path
+
+proj_dir_path = Path.cwd().parent.parent
+proj_dir_name = Path.cwd().parent.parent.name
+sys.path.append(realpath(expanduser(proj_dir_path)))
+
+from src.config.config import CONSTANTS_DICT, global_directories
+from src.utils.bivariate_stats import bar_chart, bivariate_stats, crosstab, scatterplot
+from src.utils.sqlite_mgmt import load_df_from_sqlite_table
+
+# Retrieve DataFrame from Sqlite database
+sql_select_all_query = """SELECT * FROM df_standardised"""
+
+path_to_sqlite = Path(global_directories["data_dir"]).joinpath(
+    "database", "data_storage.sqlite"
+)
+
+real_path_to_sqlite = realpath(expanduser(path_to_sqlite))
+
+df_load = load_df_from_sqlite_table(
+    "df_standardised", real_path_to_sqlite, sql_select_all_query
+)
+
+
+df_load.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"])
+
+# Drop redundant variables from the DataFrame
+df = df_load.drop(["datetime", "added_on"], axis=1)
+
+# Numerical variables identification
+num_cols = df.select_dtypes(include=["int64", "float64"]).columns
+
+num_cols = num_cols.drop(["year", "month"])
+
+print(num_cols)
+
+# Datetime variables identification
+date_cols = df.select_dtypes(include=["datetime64"]).columns
+
+date_cols = pd.Index(["year-month", "year", "month"])
+
+print(date_cols)
+
+# Visualisation and comparison of each numerical variable
+for i, first in enumerate(num_cols):
+    for j, second in enumerate(num_cols):
+        if first == second:
+            continue
+        scatterplot(df, first, second)
+
+for feat in num_cols:
+    bar_chart(df, feat, "month")
