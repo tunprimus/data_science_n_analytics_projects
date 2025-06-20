@@ -67,5 +67,3 @@ print(date_cols)
 # Descriptive statistics for each variable
 
 univariate_stats(df[num_cols])
-
-

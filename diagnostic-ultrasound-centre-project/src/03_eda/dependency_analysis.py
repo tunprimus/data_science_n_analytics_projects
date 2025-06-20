@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#!/usr/bin/env python3
 import sqlite3
 import sys
 
@@ -41,6 +40,13 @@ df_load.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"])
 # Drop redundant variables from the DataFrame
 df = df_load.drop(["datetime", "added_on"], axis=1)
 
+# Drop rows with missing values
+df.dropna(inplace=True)
+
+print(df.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"]))
+
+print(df.info())
+
 # Numerical variables identification
 num_cols = df.select_dtypes(include=["int64", "float64"]).columns
 
@@ -51,7 +57,7 @@ print(num_cols)
 # Datetime variables identification
 date_cols = df.select_dtypes(include=["datetime64"]).columns
 
-date_cols = pd.Index(["year-month", "year", "month"])
+date_cols = pd.Index(["year_month", "year", "month"])
 
 print(date_cols)
 
@@ -64,3 +70,14 @@ for i, first in enumerate(num_cols):
 
 for feat in num_cols:
     bar_chart(df, feat, "month")
+
+bivariate_stats(df, "month")
+bivariate_stats(df, "year_month")
+bivariate_stats(df, "year")
+bivariate_stats(df, "abdominal")
+
+# Use bivariate_stats to compare all variables
+for feat in df.columns:
+    print(f"Starting analysis for {feat}")
+    print(bivariate_stats(df, feat))
+    print(f"End analysis for {feat}")
