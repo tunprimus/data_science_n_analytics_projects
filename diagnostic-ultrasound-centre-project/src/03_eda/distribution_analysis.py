@@ -17,8 +17,8 @@ sys.path.append(realpath(expanduser(proj_dir_path)))
 
 from src.config.config import global_directories
 from src.utils.sqlite_mgmt import load_df_from_sqlite_table
-from src.utils.univariate_stats import univariate_stats
 from src.utils.bivariate_stats import scatterplot, bar_chart, crosstab, bivariate_stats
+from src.utils.univariate_stats import univariate_stats
 
 from src.config.config import CONSTANTS_DICT
 

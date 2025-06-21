@@ -10,6 +10,7 @@ except ImportError:
     import pandas as pd
 
     pd.set_option("mode.copy_on_write", True)
+from matplotlib import rcParams
 from os.path import expanduser, realpath
 from pathlib import Path
 
@@ -19,10 +20,16 @@ sys.path.append(realpath(expanduser(proj_dir_path)))
 
 from src.config.config import CONSTANTS_DICT, global_directories
 from src.utils.bivariate_stats import bar_chart, bivariate_stats, crosstab, scatterplot
+from src.utils.plot_outliers import plot_outliers_by_quantile, plot_outliers_by_univariate_chauvenet
 from src.utils.sqlite_mgmt import load_df_from_sqlite_table
 
+# Set few figures parameters
+rcParams["figure.figsize"] = CONSTANTS_DICT["FIG_SIZE"]
+rcParams["figure.dpi"] = CONSTANTS_DICT["FIG_DPI"]
+rcParams["savefig.format"] = CONSTANTS_DICT["SAVEFIG_FORMAT"]
+
 # Retrieve DataFrame from Sqlite database
-sql_select_all_query = """SELECT * FROM df_standardised"""
+sql_select_all_query = """SELECT * FROM df_long"""
 
 path_to_sqlite = Path(global_directories["data_dir"]).joinpath(
     "database", "data_storage.sqlite"
@@ -31,7 +38,7 @@ path_to_sqlite = Path(global_directories["data_dir"]).joinpath(
 real_path_to_sqlite = realpath(expanduser(path_to_sqlite))
 
 df_load = load_df_from_sqlite_table(
-    "df_standardised", real_path_to_sqlite, sql_select_all_query
+    "df_long", real_path_to_sqlite, sql_select_all_query
 )
 
 
@@ -61,12 +68,12 @@ date_cols = pd.Index(["year_month", "year", "month"])
 
 print(date_cols)
 
-# Visualisation and comparison of each numerical variable
-for i, first in enumerate(num_cols):
-    for j, second in enumerate(num_cols):
-        if first == second:
-            continue
-        scatterplot(df, first, second)
+# Visualisation and comparison of each numerical variable if in wide format
+# for i, first in enumerate(num_cols):
+#     for j, second in enumerate(num_cols):
+#         if first == second:
+#             continue
+#         scatterplot(df, first, second)
 
 for feat in num_cols:
     bar_chart(df, feat, "month")
@@ -74,7 +81,7 @@ for feat in num_cols:
 bivariate_stats(df, "month")
 bivariate_stats(df, "year_month")
 bivariate_stats(df, "year")
-bivariate_stats(df, "abdominal")
+bivariate_stats(df, "investigation")
 
 # Use bivariate_stats to compare all variables
 for feat in df.columns:
