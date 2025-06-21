@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import matplotlib.pyplot as plt
+import seaborn as sns
 import sqlite3
 import sys
 try:
@@ -63,6 +64,11 @@ date_cols = df.select_dtypes(include=["datetime64"]).columns
 date_cols = pd.Index(["year-month", "year", "month"])
 
 print(date_cols)
+
+# Visualise the variables
+df = df.melt(id_vars=["year_month", "year", "month"], var_name="investigation", value_name="num_visits")
+
+sns.swarmplot(x="year", y="num_visits", data=df)
 
 # Descriptive statistics for each variable
 

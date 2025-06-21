@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+import matplotlib.pyplot as plt
+import seaborn as sns
 import sqlite3
 import sys
-
-import matplotlib.pyplot as plt
 
 try:
     import fireducks.pandas as pd
@@ -81,3 +81,5 @@ for feat in df.columns:
     print(f"Starting analysis for {feat}")
     print(bivariate_stats(df, feat))
     print(f"End analysis for {feat}")
+
+

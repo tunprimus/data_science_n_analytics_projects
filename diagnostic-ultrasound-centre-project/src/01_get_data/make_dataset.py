@@ -50,9 +50,6 @@ df_raw_02.describe().T
 df_standardised_01 = standardise_column_names(df_raw_01)
 df_standardised_02 = standardise_column_names(df_raw_02)
 
-# printdf(df_standardised_01)
-# printdf(df_standardised_02)
-
 remap_month_name_to_number = {
     "Jan.": 1,
     "Feb.": 2,
@@ -72,14 +69,28 @@ df_standardised_01["month_number"] = df_standardised_01["month"].map(remap_month
 
 df_standardised_01["date_str"] = df_standardised_01["year"].astype(str) + "-" + df_standardised_01["month"].astype(str)
 
+df_standardised_02["month_number"] = df_standardised_02["month"].map(remap_month_name_to_number)
+
+df_standardised_02["date_str"] = df_standardised_02["year"].astype(str) + "-" + df_standardised_02["month"].astype(str)
+
 # How to make pd.to_datetime insert last day of month instead of first when input is limited to 'yyyy-mm'? -> https://stackoverflow.com/a/59190866
 try:
     df_standardised_01["datetime"] = pd.to_datetime(df_standardised_01["date_str"]) + pd.offsets.MonthEnd()
+
+    df_standardised_02["datetime"] = pd.to_datetime(df_standardised_02["date_str"]) + pd.offsets.MonthEnd()
 except ValueError:
     df_standardised_01["datetime"] = pd.to_datetime(
         dict(
             year = df_standardised_01["year"],
             month = df_standardised_01["month_number"],
+            day = 28,
+        )
+    )
+
+    df_standardised_02["datetime"] = pd.to_datetime(
+        dict(
+            year = df_standardised_02["year"],
+            month = df_standardised_02["month_number"],
             day = 28,
         )
     )
@@ -90,25 +101,50 @@ df_standardised_01["year"] = df_standardised_01["datetime"].dt.year
 
 df_standardised_01["month"] = df_standardised_01["datetime"].dt.month
 
+df_standardised_02.drop(["year", "month", "month_number", "date_str"], axis=1, inplace=True)
+
+df_standardised_02["year"] = df_standardised_02["datetime"].dt.year
+
+df_standardised_02["month"] = df_standardised_02["datetime"].dt.month
+
 # Create Year-Month Column from Dates -> https://dfrieds.com/data-analysis/create-year-month-column.html
 df_standardised_01["year_month"] = df_standardised_01["datetime"].dt.strftime("%Y-%m")
 
+df_standardised_02["year_month"] = df_standardised_02["datetime"].dt.strftime("%Y-%m")
 
-df_standardised = df_standardised_01[["datetime", "year_month", "year", "month", "obstetrics", "pelvic", "abdominal", "transrectal", "breast", "transvaginal", "folliculometry", "thyroid_neck", "scrotal", "doppler", "anomaly", "ocular", "musculoskeletal", "other_special_scans", "echocardiography"]]
+# Re-order the columns
+df_wide = df_standardised_01[["datetime", "year_month", "year", "month", "obstetrics", "pelvic", "abdominal", "transrectal", "breast", "transvaginal", "folliculometry", "thyroid_neck", "scrotal", "doppler", "anomaly", "ocular", "musculoskeletal", "other_special_scans", "echocardiography"]]
 
-path_for_csv = data_directories["interim_data_dir"] + "/df_standardised" + "-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".csv"
+df_long = df_standardised_02[["datetime", "year_month", "year", "month", "investigation", "number"]]
 
-df_standardised.to_csv(path_for_csv, index=False)
+# Define paths for csv output
+path_for_csv_wide = data_directories["interim_data_dir"] + "/df_wide" + ".csv"
+path_for_csv_wide_timestamped = data_directories["interim_data_dir"] + "/df_wide" + "-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".csv"
+path_for_csv_long = data_directories["interim_data_dir"] + "/df_long" + ".csv"
+path_for_csv_long_timestamped = data_directories["interim_data_dir"] + "/df_long" + "-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + ".csv"
 
-printdf(df_standardised)
+# Export DataFrames to csv
+df_wide.to_csv(path_for_csv_wide, index=False)
+df_wide.to_csv(path_for_csv_wide_timestamped, index=False)
+
+df_long.to_csv(path_for_csv_long, index=False)
+df_long.to_csv(path_for_csv_long_timestamped, index=False)
+
+printdf(df_wide)
+printdf(df_long)
 
 
 # Database directory for storing raw and processed data
 sqlite_db_file = data_directories["database_dir"] + "/data_storage.sqlite"
 
-process_spreadsheet_into_sqlite(raw_data02, sheet_name=None, path_to_database=sqlite_db_file)
+# process_spreadsheet_into_sqlite(raw_data02, sheet_name=None, path_to_database=sqlite_db_file)
 
-real_path_to_standardised_csv = realpath(expanduser(data_directories["interim_data_dir"] + "/df_standardised.csv"))
+# Insert CSVs into SQLite database
+real_path_to_wide_csv = realpath(expanduser(data_directories["interim_data_dir"] + "/df_wide.csv"))
 
-process_csv_into_sqlite(real_path_to_standardised_csv, path_to_database=sqlite_db_file)
+real_path_to_long_csv = realpath(expanduser(data_directories["interim_data_dir"] + "/df_long.csv"))
+
+process_csv_into_sqlite(real_path_to_wide_csv, path_to_database=sqlite_db_file)
+
+process_csv_into_sqlite(real_path_to_long_csv, path_to_database=sqlite_db_file)
 
