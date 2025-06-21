@@ -23,23 +23,21 @@ from src.utils.bivariate_stats import scatterplot, bar_chart, crosstab, bivariat
 from src.config.config import CONSTANTS_DICT
 
 # Retrieve DataFrame from Sqlite database
-sql_select_all_query = """SELECT * FROM df_standardised"""
+sql_select_all_query = """SELECT * FROM df_long"""
 
 path_to_sqlite = Path(global_directories["data_dir"]).joinpath("database", "data_storage.sqlite")
 
 real_path_to_sqlite = realpath(expanduser(path_to_sqlite))
 
-df_load = load_df_from_sqlite_table("df_standardised", real_path_to_sqlite, sql_select_all_query)
+df_load = load_df_from_sqlite_table("df_long", real_path_to_sqlite, sql_select_all_query)
 
 
 df_load.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"])
 
 # Drop redundant variables from the DataFrame
-
 df = df_load.drop(["datetime", "added_on"], axis=1)
 
 # Drop rows with missing values
-
 df.dropna(inplace=True)
 
 print(df.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"]))
@@ -47,18 +45,14 @@ print(df.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"]))
 print(df.info())
 
 # Numerical variables identification
-
 num_cols = df.select_dtypes(include=["int64", "float64"]).columns
 
 num_cols = num_cols.drop(["year", "month"])
 
 print(num_cols)
 
-# Categorical variables identification
-
 
 # Datetime variables identification
-
 date_cols = df.select_dtypes(include=["datetime64"]).columns
 
 date_cols = pd.Index(["year-month", "year", "month"])
@@ -66,10 +60,10 @@ date_cols = pd.Index(["year-month", "year", "month"])
 print(date_cols)
 
 # Visualise the variables
-df = df.melt(id_vars=["year_month", "year", "month"], var_name="investigation", value_name="num_visits")
-
-sns.swarmplot(x="year", y="num_visits", data=df)
+sns.swarmplot(x="year", y="number", data=df)
+sns.swarmplot(x="month", y="number", data=df)
+sns.boxenplot(x="investigation", y="number", data=df)
 
 # Descriptive statistics for each variable
-
 univariate_stats(df[num_cols])
+univariate_stats(df)
