@@ -8,7 +8,6 @@ try:
     import fireducks.pandas as pd
 except ImportError:
     import pandas as pd
-
     pd.set_option("mode.copy_on_write", True)
 from matplotlib import rcParams
 from os.path import expanduser, realpath
@@ -20,7 +19,10 @@ sys.path.append(realpath(expanduser(proj_dir_path)))
 
 from src.config.config import CONSTANTS_DICT, global_directories
 from src.utils.bivariate_stats import bar_chart, bivariate_stats, crosstab, scatterplot
-from src.utils.plot_outliers import plot_outliers_by_quantile, plot_outliers_by_univariate_chauvenet
+from src.utils.plot_outliers import (
+    plot_outliers_by_quantile,
+    plot_outliers_by_univariate_chauvenet,
+)
 from src.utils.sqlite_mgmt import load_df_from_sqlite_table
 
 # Set few figures parameters
@@ -88,5 +90,3 @@ for feat in df.columns:
     print(f"Starting analysis for {feat}")
     print(bivariate_stats(df, feat))
     print(f"End analysis for {feat}")
-
-

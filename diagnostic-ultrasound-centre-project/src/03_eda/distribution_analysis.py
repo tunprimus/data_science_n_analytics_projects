@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sqlite3
 import sys
+
 try:
     import fireducks.pandas as pd
 except ImportError:
@@ -26,11 +27,15 @@ from src.config.config import CONSTANTS_DICT
 # Retrieve DataFrame from Sqlite database
 sql_select_all_query = """SELECT * FROM df_long"""
 
-path_to_sqlite = Path(global_directories["data_dir"]).joinpath("database", "data_storage.sqlite")
+path_to_sqlite = Path(global_directories["data_dir"]).joinpath(
+    "database", "data_storage.sqlite"
+)
 
 real_path_to_sqlite = realpath(expanduser(path_to_sqlite))
 
-df_load = load_df_from_sqlite_table("df_long", real_path_to_sqlite, sql_select_all_query)
+df_load = load_df_from_sqlite_table(
+    "df_long", real_path_to_sqlite, sql_select_all_query
+)
 
 
 df_load.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"])
@@ -78,4 +83,3 @@ path_to_report = proj_dir_path / "/reports/uss_turnover_ydata_profile_report.htm
 real_path_to_report = realpath(expanduser(path_to_report))
 
 uss_turnover_profile_report.to_file(output_file=path_to_report)
-

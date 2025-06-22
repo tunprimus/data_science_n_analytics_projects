@@ -8,7 +8,6 @@ try:
     import fireducks.pandas as pd
 except ImportError:
     import pandas as pd
-
     pd.set_option("mode.copy_on_write", True)
 from matplotlib import rcParams
 from os.path import expanduser, realpath
@@ -20,7 +19,10 @@ sys.path.append(realpath(expanduser(proj_dir_path)))
 
 from src.config.config import CONSTANTS_DICT, global_directories
 from src.utils.bivariate_stats import bar_chart, bivariate_stats, crosstab, scatterplot
-from src.utils.plot_outliers import plot_outliers_by_quantile, plot_outliers_by_univariate_chauvenet
+from src.utils.plot_outliers import (
+    plot_outliers_by_quantile,
+    plot_outliers_by_univariate_chauvenet,
+)
 from src.utils.sqlite_mgmt import load_df_from_sqlite_table
 from src.utils.univariate_stats import univariate_stats
 
@@ -29,7 +31,6 @@ from src.utils.univariate_stats import univariate_stats
 rcParams["figure.figsize"] = CONSTANTS_DICT["FIG_SIZE"]
 rcParams["figure.dpi"] = CONSTANTS_DICT["FIG_DPI"]
 rcParams["savefig.format"] = CONSTANTS_DICT["SAVEFIG_FORMAT"]
-
 
 
 # Retrieve DataFrame from Sqlite database
@@ -56,14 +57,14 @@ print(df.sample(CONSTANTS_DICT["RANDOM_SAMPLE_SIZE"]))
 print(df.info())
 
 
-
-#-----------------------------------------------------------------------#
+# -----------------------------------------------------------------------#
 # Segment & Subset Data into Groups Based on Different Features         #
-#-----------------------------------------------------------------------#
-
+# -----------------------------------------------------------------------#
 
 df.groupby(["investigation"])["number", "year_month"].plot()
-df_grouper = df.groupby(["investigation"])["year_month", "month", "number"].reset_index()
+df_grouper = df.groupby(["investigation"])[
+    "year_month", "month", "number"
+].reset_index()
 
 df_grouper.value_counts()
 
@@ -83,21 +84,22 @@ df_grouper.get_group("Abdominal")["number"].plot()
 
 
 pivot_table_y_m_n = df.pivot_table(index="year", columns="month", values="number")
-sns.heatmap(pivot_table_y_m_n, cmap='coolwarm', annot=True, fmt=".0f")
+sns.heatmap(pivot_table_y_m_n, cmap="coolwarm", annot=True, fmt=".0f")
 
-pivot_table_y_i_n = df.pivot_table(index="year", columns="investigation", values="number")
-sns.heatmap(pivot_table_y_i_n, cmap='coolwarm', annot=True, fmt=".0f")
+pivot_table_y_i_n = df.pivot_table(
+    index="year", columns="investigation", values="number"
+)
+sns.heatmap(pivot_table_y_i_n, cmap="coolwarm", annot=True, fmt=".0f")
 
-pivot_table_m_i_n = df.pivot_table(index="month", columns="investigation", values="number")
-sns.heatmap(pivot_table_m_i_n, cmap='coolwarm', annot=True, fmt=".0f")
+pivot_table_m_i_n = df.pivot_table(
+    index="month", columns="investigation", values="number"
+)
+sns.heatmap(pivot_table_m_i_n, cmap="coolwarm", annot=True, fmt=".0f")
 
 
-
-
-
-#-----------------------------------------------------------------------#
+# -----------------------------------------------------------------------#
 # Compare Results of Distribution & Dependency Analyses of These Groups #
-#-----------------------------------------------------------------------#
+# -----------------------------------------------------------------------#
 
 sns.violinplot(data=pivot_table_m_i_n)
 plt.title("Frequency of Investigations")
