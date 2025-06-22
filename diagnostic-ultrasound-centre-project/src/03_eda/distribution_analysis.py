@@ -10,6 +10,7 @@ except ImportError:
     pd.set_option("mode.copy_on_write", True)
 from os.path import expanduser, realpath
 from pathlib import Path
+from ydata_profiling import ProfileReport
 
 proj_dir_path = Path.cwd().parent.parent
 proj_dir_name = Path.cwd().parent.parent.name
@@ -67,3 +68,14 @@ sns.boxenplot(x="investigation", y="number", data=df)
 # Descriptive statistics for each variable
 univariate_stats(df[num_cols])
 univariate_stats(df)
+
+
+# Generate profile report
+uss_turnover_profile_report = ProfileReport(df)
+
+# path_to_report = str(proj_dir_path) + "/reports/uss_turnover_ydata_profile_report.html"
+path_to_report = proj_dir_path / "/reports/uss_turnover_ydata_profile_report.html"
+real_path_to_report = realpath(expanduser(path_to_report))
+
+uss_turnover_profile_report.to_file(output_file=path_to_report)
+
