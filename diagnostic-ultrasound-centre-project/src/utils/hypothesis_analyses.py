@@ -69,6 +69,74 @@ def calc_sample_size(
     return sample_size
 
 
+def calc_chi_squared(df, col_1, col_2, alpha_val=0.05, num_dp=4, messages=True):
+    """
+    Perform a Chi-Squared test for independence between two categorical variables in a DataFrame.
+
+    This function calculates the Chi-Squared statistic and the p-value for a 2x2 contingency table
+    created from two specified columns in a DataFrame. The test assesses whether the two variables
+    are independent of each other.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing the data.
+    col_1 : str
+        The name of the first column to be used in the contingency table.
+    col_2 : str
+        The name of the second column to be used in the contingency table.
+    alpha_val : float, optional
+        The significance level for the test. Default is 0.05.
+    num_dp : int, optional
+        The number of decimal places to round the results to. Default is 4.
+    messages : bool, optional
+        If True, print the contingency table and the result of the hypothesis test to the console.
+        Default is True.
+
+    Returns
+    -------
+    chi_squared_stat : float
+        The computed Chi-Squared statistic.
+    p_value : float
+        The p-value of the test.
+
+    Raises
+    ------
+    ValueError
+        If either of the specified columns is not found in the DataFrame or if either column
+        does not represent a binary (2-level) categorical variable.
+    """
+    import scipy.stats as sp_stats
+    try:
+        import fireducks.pandas as pd
+    except ImportError:
+        import pandas as pd
+        pd.set_option("mode.copy_on_write", True)
+
+    if col_1 not in df.columns or col_2 not in df.columns:
+        raise ValueError(
+            f"Columns {col_1} and {col_2} not found in the DataFrame."
+        )
+
+    if (df[col_1].nunique() != 2) or (df[col_2].nunique() != 2):
+        raise ValueError("Chi-square test is only valid for 2x2 contingency tables.")
+        return None
+
+    contingency_table = pd.crosstab(df[col_1], df[col_2], margins=True, margins_name="Total")
+
+    chi_squared_stat, p_value, dof, expected = sp_stats.chi2_contingency(contingency_table)
+
+    if messages:
+        print(contingency_table)
+        if p_value < alpha_val:
+            print(f"Reject the null hypothesis. P-value: {p_value:.{num_dp}f} for χ² = {chi_squared_stat:.{num_dp}f}")
+        else:
+            print(f"Fail to reject the null hypothesis. P-value: {p_value:.{num_dp}f} for χ² = {chi_squared_stat:.{num_dp}f}")
+
+    return chi_squared_stat, p_value
+
+
+
 def calc_t_test(arr_1, arr_2, alpha_val=0.05, equal_var=False, num_dp=4, messages=True):
     """
     Calculate a two-sample t-test between two arrays.
@@ -165,7 +233,6 @@ def calc_t_test_extended(
     The t-test is calculated using scipy.stats.ttest_ind. The confidence interval is derived using the Welch-Satterthwaite equation for degrees of freedom.
     """
     import numpy as np
-
     try:
         import fireducks.pandas as pd
     except ImportError:
