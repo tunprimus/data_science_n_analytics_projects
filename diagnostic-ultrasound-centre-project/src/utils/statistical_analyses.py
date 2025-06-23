@@ -607,7 +607,7 @@ def calc_kwiatkowski_phillips_schmidt_shin(
                 f"Probably non-stationary. Fail to reject the null hypothesis. p-value = {p_value:.{num_dp}f} for Kwiatkowski-Phillips-Schmidt-Shin Unit Root Test: {kpss_stat:.{num_dp}f}"
             )
 
-    return adf_stat, p_value
+    return kpss_stat, p_value
 
 
 # ------------------------------------------------------#
