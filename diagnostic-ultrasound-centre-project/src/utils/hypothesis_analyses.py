@@ -115,7 +115,7 @@ def calc_chi_squared(df, col_1, col_2, alpha_val=0.05, num_dp=4, messages=True):
 
     if col_1 not in df.columns or col_2 not in df.columns:
         raise ValueError(
-            f"Columns {col_1} and {col_2} not found in the DataFrame."
+            f"Columns {col_1} and/or {col_2} not found in the DataFrame."
         )
 
     if (df[col_1].nunique() != 2) or (df[col_2].nunique() != 2):
