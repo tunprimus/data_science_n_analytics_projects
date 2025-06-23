@@ -69,6 +69,58 @@ def calc_sample_size(
     return sample_size
 
 
+
+def calc_min_sample_size_for_ab_test(
+    conv_rate_1,
+    desired_effect_size,
+    alpha_val=0.05,
+    power=0.80,
+    messages=True,
+):
+    """
+    Calculate the minimum sample size required for an A/B test to detect a certain effect size.
+
+    Parameters
+    ----------
+    conv_rate_1 : float
+        The conversion rate of the control group.
+    desired_effect_size : float
+        The desired effect size to be detected.
+    alpha_val : float, optional
+        The significance level. Default is 0.05.
+    power : float, optional
+        The desired power of the test. Default is 0.80.
+    messages : bool, optional
+        If True, print the result to the console. Default is True.
+
+    Returns
+    -------
+    min_sample_size : int
+        The required minimum sample size.
+    """
+    import math
+    import numpy as np
+    import scipy.stats as sp_stats
+
+    # Find Z_beta
+    z_beta = sp_stats.norm.ppf(power)
+
+    # Find Z_alpha
+    z_alpha = sp_stats.norm.ppf(1 - alpha_val / 2)
+
+    # Estimate minimum sample size
+    conv_rate_2 = conv_rate_1 + desired_effect_size
+    avg_prop = (conv_rate_1 + conv_rate_2) / 2
+    variance = avg_prop * (1 - avg_prop)
+    min_sample_size = math.ceil(2 * variance * (z_beta + z_alpha) ** 2 / desired_effect_size ** 2)
+
+    if messages:
+        print(f"The required minimum sample size is {min_sample_size}.")
+
+    return min_sample_size
+
+
+
 def calc_chi_squared(df, col_1, col_2, alpha_val=0.05, num_dp=4, messages=True):
     """
     Perform a Chi-Squared test for independence between two categorical variables in a DataFrame.
