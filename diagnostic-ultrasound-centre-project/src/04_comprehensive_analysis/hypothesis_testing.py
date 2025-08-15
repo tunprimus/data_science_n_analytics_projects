@@ -29,7 +29,12 @@ rcParams["savefig.format"] = CONSTANTS_DICT["SAVEFIG_FORMAT"]
 
 
 # Retrieve DataFrame from Sqlite database
-sql_select_all_query = """SELECT * FROM df_wide"""
+sql_select_all_query = """
+SELECT *
+FROM
+    df_wide
+;
+"""
 
 path_to_sqlite = Path(global_directories["data_dir"]).joinpath(
     "database", "data_storage.sqlite"

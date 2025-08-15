@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # Modified from https://medium.com/@ccpythonprogramming/dynamically-import-csv-files-into-sqlite-with-python-3c9ba07fe559
-import sqlite3
 import pandas as pd
+import sqlite3
+import sys
 from os.path import expanduser, realpath
 
 pd.set_option("mode.copy_on_write", True)
 
+sys.path.append(realpath(expanduser("~/zzz_personal/snippets_n_gists/data_utils")))
+
+from standardise_column_names import standardise_column_names
 
 def create_table(cur, table_name, columns):
     """
@@ -27,7 +31,7 @@ def create_table(cur, table_name, columns):
     None
     """
     columns_defn = ", ".join(f"{col} TEXT" for col in columns) if isinstance(columns, (pd.core.indexes.base.Index, pd.core.frame.DataFrame)) else columns
-    columns_defn = columns_defn + ",added_on DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"
+    columns_defn = "id INT PRIMARY KEY, " + "ulid_uuidv7" + columns_defn + ", created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL" + ", updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" + ", deleted_at DATETIME DEFAULT NULL"
 
     table_create_stmt = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_defn})"
     cur.execute(table_create_stmt)
@@ -95,7 +99,11 @@ def process_csv_into_sqlite(file_path, path_to_database="./test.db"):
     real_path_to_file = realpath(file_path)
     real_path_to_database = realpath(expanduser(path_to_database))
 
-    df = pd.read_csv(real_path_to_file)
+    if (real_path_to_file.endswith(".csv")) or (real_path_to_file.endswith(".tsv")):
+        df = pd.read_csv(real_path_to_file)
+
+    df = standardise_column_names(df)
+    
     table_name = real_path_to_file.split("/")[-1].replace(".csv", "").replace("-", "_").replace("/", "")
     insert_into_db(table_name, df, real_path_to_database)
 
@@ -104,8 +112,12 @@ def process_spreadsheet_into_sqlite(file_path, sheet_name=None, path_to_database
     real_path_to_file = realpath(file_path)
     real_path_to_database = realpath(expanduser(path_to_database))
 
-    df = pd.read_excel(real_path_to_file)
+    if (real_path_to_file.endswith(".xlsx")) or (real_path_to_file.endswith(".xls")):
+        df = pd.read_excel(real_path_to_file)
+
+    df = standardise_column_names(df)
+
     table_name = (
-        sheet_name if sheet_name else real_path_to_file.split("/")[-1].replace(".xlsx", "").replace("-", "_").replace("/", "")
+        sheet_name.lower() if sheet_name else real_path_to_file.split("/")[-1].replace(".xlsx", "").replace("-", "_").replace("/", "").lower()
     )
     insert_into_db(table_name, df, real_path_to_database)

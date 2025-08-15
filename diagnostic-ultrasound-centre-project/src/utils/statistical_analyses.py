@@ -1202,3 +1202,4 @@ def calc_friedman(*arr, alpha_val=0.05, num_dp=4, messages=True):
             )
 
     return friedman_stat, p_value
+

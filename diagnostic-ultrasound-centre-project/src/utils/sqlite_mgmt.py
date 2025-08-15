@@ -35,3 +35,4 @@ def load_df_from_sqlite_table(table_name, path_to_sqlite, sql_query):
     with sqlite3.connect(real_path_to_sqlite) as conn:
         print(f"Loading DataFrame for `{proj_dir_name}` project")
         return pd.read_sql(sql_query, conn)
+

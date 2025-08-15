@@ -7,7 +7,7 @@ end_of_line = lf
 indent_size = 4
 indent_style = tab
 insert_final_newline = true
-max_line_length = 80
+max_line_length = 79
 trim_trailing_whitespace = true
 
 [*.{py,json,yml,ipynb}]
@@ -23,4 +23,10 @@ indent_style = tab
 
 [*.md]
 max_line_length = 0
-trim_trailing_whitespace = false 
+trim_trailing_whitespace = false
+
+# SQL files
+[*.{sql,tsql,ddl}]
+indent_style = space
+indent_size = 4
+end_of_line = crlf

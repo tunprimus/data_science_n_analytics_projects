@@ -33,13 +33,13 @@ global_directories = {
 
 # Define useful constants
 GOLDEN_RATIO = 1.618033989
-FIG_WIDTH = 20
+FIG_WIDTH = 12
 FIG_HEIGHT = FIG_WIDTH / GOLDEN_RATIO
 
 # Define useful constants in a dictionary
 CONSTANTS_DICT = {
     "GOLDEN_RATIO": 1.618033989,
-    "FIG_WIDTH": 20,
+    "FIG_WIDTH": 12,
     "FIG_HEIGHT": (FIG_WIDTH) / GOLDEN_RATIO,
     "FIG_SIZE": (FIG_WIDTH, FIG_HEIGHT),
     "FIG_DPI": 72,
